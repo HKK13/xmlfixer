@@ -14,13 +14,13 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/XMLUpload', function (req, res) {
-  var __dirname = "/Users/Kaan/WebstormProjects/XMLApi/public/uploads",
+  var __dir = path.join(__dirname, "/..", "public", "uploads"),
   formArray = [];
   req.pipe(req.busboy);
   req.busboy.on('field', function (fieldname, val) {
     formArray[fieldname] = val;
     if(formArray["xmlFileSelect"] && formArray["tagNum"] && formArray["childNum"] && formArray["fileName"] && formArray["tagName"]) {
-      xmlParser.decompressZip(__dirname + "/" + formArray["fileName"], function (err, entryList) {
+      xmlParser.decompressZip(__dir + "/" + formArray["fileName"], function (err, entryList) {
         if(!err) {
           xmlParser.deleteFile(formArray["fileName"]);
           xmlParser.findInEntryList(entryList, formArray["xmlFileSelect"], function (err) {
@@ -59,7 +59,7 @@ router.post('/XMLUpload', function (req, res) {
 });
 
 router.post('/XMLZipUploads', function (req, res) {
-  var __dirname = "/Users/Kaan/WebstormProjects/XMLApi/public/uploads";
+  var __dir = path.join(__dirname, "/..", "public", "uploads");
   var fstream;
   var tag;
   req.pipe(req.busboy);
@@ -71,10 +71,10 @@ router.post('/XMLZipUploads', function (req, res) {
     var temp = filename;
 
     if ((temp.split(".").pop() === "zip")) {
-      fstream = fs.createWriteStream(__dirname + '/' + filename);
+      fstream = fs.createWriteStream(__dir + '/' + filename);
       file.pipe(fstream);
       fstream.on('close', function () {
-        xmlParser.decompressZip(__dirname + '/' + filename, function (e, zipEntries) {
+        xmlParser.decompressZip(__dir + '/' + filename, function (e, zipEntries) {
           xmlParser.deleteFile(filename);
           xmlParser.validateXML(filename.substr(0, filename.length - 4), zipEntries, tag, function (err, successes, errorLog, fileList, macZips) {
             if (!err) {
@@ -116,7 +116,7 @@ router.post('/XMLZipUploads', function (req, res) {
 
 router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file.
   var file = req.params.file;
-  var filePath = "/Users/Kaan/WebstormProjects/XMLApi/public/uploads/" + file;
+  var filePath = path.join(__dirname, "/..", "public", "uploads", "file");
   res.download(filePath, function (err) {
     if(!err) {
       xmlParser.deleteFile(file, function (err) {
