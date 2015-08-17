@@ -1,0 +1,40 @@
+//
+   Created by Kaan on 13/08/15.
+
+extends layout
+
+block content
+   div
+      h1 What sorcery is this?
+      p This is a xml editing tool to detect and correct errors in xml documents.
+      h1 How this works?
+         h3 Please follow the steps below.
+         h4 In order to upload and check a file:
+         li 1- Upload the zip file containing all xml files.
+         li 2- Specify the tag in "tag-name" input.
+         li 3- Submit.
+         li 4- Click the download icon to download.
+         h4 After logs arrived, you can delete specified child of a tag(One at a time):
+         li 1- Select corresponding file from list.
+         li 2- Specify the tag number given in success log.
+         li 3- Specify the child number given in success log.
+         li Note: Given index numbers of the tags will be in same order when you manually search/find. (e.g. Tag No:1 means it will be the 1st tag to be highlighted when you search/find that specified tag)
+         li 4- Submit.
+         li 5- Click the download icon to download.
+         h4 To download a file later:
+         p This operation is not supported by user interface.
+         li 1- Save the name of zip file somewhere.
+         li 2- Add this string "/Download/" at the end of the url.
+         li 3- Type file name after "/Download/".
+         li At the end your url should look like this "localhost/Download/1196671_en.zip"
+         li 4- Press enter / Click go.
+         li 5- Save file.
+         li Note: If you have already downloaded the file before you will not be able to download it again.
+      h1 Warning:
+      li 1- Zip files should only contain xml files(.svg are ok)
+         p -If you submit zip files containing zip files program will do nothing.
+      li 2- Program will not delete anything except commands(e.g. "& # 1 6 0").
+         p -Texts containing '&' might be deleted.(e.g. Mighty&Almighty)
+      li 3- Files will be deleted after you click the download icon.
+         p Note: Currently files are deleted even if you don't download after clicking the download icon. This is a bug.
+      li 4- Same named files will be overwritten.

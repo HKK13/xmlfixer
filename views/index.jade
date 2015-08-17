@@ -1,0 +1,32 @@
+extends layout
+
+block content
+  div(id="container-div")
+    form(id="uploadForm" action="/XMLZipUploads" method="post" enctype="multipart/form-data")
+      input(id="fileInputButton" type="button" value="Browse" required)
+      input(id="fileInput" type="file" name="fileUpload" required)
+      input(id="tagInput" type="textarea" name="tagName" placeholder="tag-name (without '<' and '>')" required)
+      input(id="submit-button" type="submit" value="Submit")
+      a(href="/Help" target="_blank") Help?
+  div(id="process-log")
+    div(id="success-log")
+      h1 Trace Log
+    div(id="error-log")
+      h1 Error Log
+  div(class="loader")
+  div(id="downloader")
+    a(id="downloadLink")
+      img(id="downloadImage")
+      h3 Download
+  div(class="footer")
+    div
+      form(id="xmlEditForm" action="/XMLUpload")
+        select(id="xmlOnlySelect" name="xmlFileSelect")
+        input(type="number" name="tagNum" placeholder="Tag Number" required)
+        input(type="number" name="childNum" placeholder="Child Number" required)
+        input(style="display: none;" type="textarea" name="fileName" id="footerFileHolder" required)
+        input(style="display: none;" type="textarea" name="tagName" id="footerTagHolder" required)
+        input(type="submit" value="Delete")
+
+
+
