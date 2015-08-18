@@ -10,7 +10,7 @@ a {
 #success-log{
   width: 42%;
   float: left;
-  padding-top: 200px;
+  margin-top: 200px;
   height: 600px;
   overflow-y: scroll;
   text-align: center;
