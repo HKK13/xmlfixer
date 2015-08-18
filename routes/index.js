@@ -116,7 +116,7 @@ router.post('/XMLZipUploads', function (req, res) {
 
 router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file.
   var file = req.params.file;
-  var filePath = path.join(__dirname, "/..", "public", "uploads", "file");
+  var filePath = path.join(__dirname, "/..", "public", "uploads", file);
   res.download(filePath, function (err) {
     if(!err) {
       xmlParser.deleteFile(file, function (err) {
