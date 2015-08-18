@@ -8,9 +8,12 @@ var router = express.Router();
 
 router.use(busboy());
 
+
+//TODO : Kaan buralarda da ana index.js'te hangi ?artta fonksiyonlar nas?l ça??r?l?yor anlat?rsan iyi olur, mesela if caselerinin içinde, ?u durumdaysa bu ifi yapar demek ilerde editlemeye kolayl?k :)
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'XML Value Fixer'});
+  res.render('index', { title: 'Translation Validator'});
 });
 
 router.post('/XMLUpload', function (req, res) {
@@ -114,6 +117,8 @@ router.post('/XMLZipUploads', function (req, res) {
   });
 });
 
+
+//File download edildi?inde buras? çal???yor, download fonksiyonu edit edilmi? file'?n sourcetan al?nmas?n? sa?l?yor.
 router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file.
   var file = req.params.file;
   var filePath = path.join(__dirname, "/..", "public", "uploads", file);
@@ -130,7 +135,7 @@ router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file
 });
 
 router.get('/Help', function (req, res) {
-  res.render('help', {title: "XML Fixer Help"});
+  res.render('help', {title: "Help"});
 });
 
 module.exports = router;

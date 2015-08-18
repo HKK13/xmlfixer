@@ -4,7 +4,7 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  color: #FFFFFF;
 }
 
 #success-log{
@@ -37,9 +37,9 @@ a {
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgba(135,206,250, 0.8);
+  background-color: #6B0000;
   text-align: center;
-  height: 230px;
+  height: 220px;
   width: 100%;
 }
 

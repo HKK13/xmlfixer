@@ -8,6 +8,7 @@ var AdmZip = require('adm-zip'),
     xmlSer = require('xmldom').XMLSerializer,
     pathP = require('path');
 
+//TODO Kaan bu class? comment eder misin, file'in nerelerde processlerden geçildi?inin bilinmesi iyi, her metoda birer tane tan?mlay?c? comment i?levsel olur!
 
 var __dir = pathP.join(__dirname, "/..", "public", "uploads");
 var decompressZip= function(file, callback)
