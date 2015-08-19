@@ -1,0 +1,12 @@
+//
+   Created by Kaan on 17/08/15.
+extends layout
+
+block content
+   div#xmlEditor
+      form(action="/XMLEdit" method="POST" onload="ShowSelection")
+         h2= status
+         input(type="text" value=file name="fileName" style="display: none")
+         input(type="text" value=folder name="folderName" style="display: none")
+         textarea(name="fileData")=text
+         input(type="submit" value="Save").submit-but
