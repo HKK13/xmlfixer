@@ -74,7 +74,7 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
                                     },
                                     error: function (err) {
                                         if (warningFileList.indexOf(filename) < 0) {
-                                            errorLog.push("Warning! File or Syntax might be corrupt:" + filename);
+                                            console.log("Warning! File or Syntax might be corrupt:" + filename);
                                             warningFileList.push(filename);
                                         }
                                     },
