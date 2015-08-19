@@ -3,7 +3,8 @@ var busboy = require('connect-busboy');
 var fs = require('fs');
 var xmlParser = require('./XmlParser'),
     path = require('path'),
-    xmlEditor = require('./xmlEditor');
+    xmlEditor = require('./xmlEditor'),
+    walk = require('walk');
 
 var router = express.Router();
 
@@ -65,17 +66,37 @@ router.post('/XMLZipUploads', function (req, res) {
 
 //File download edildi?inde buras? �al???yor, download fonksiyonu edit edilmi? file'?n sourcetan al?nmas?n? sa?l?yor.
 router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file.
-  var file = req.params.file;
+  var file = req.params.file,
+      files   = [],
+      directories = [];
+  file = file.substr(0, file.length-4);
   var filePath = path.join(__dirname, "/..", "public", "uploads", file);
-  res.download(filePath, function (err) {
-    if(!err) {
-      xmlParser.deleteFile(file, function (err) {
-        if (!err)
-          console.log("File Deleted: " + file);
-        else
-          console.log("Could not delete file: " + filePath);
-      });
-    }
+  var walker  = walk.walk(filePath, { followLinks: false });
+  walker.on("directories", function (root, dirStatsArray, next) {
+    directories.push(dirStatsArray)
+    next();
+  });
+  walker.on('file', function(root, stat, next) {
+    files.push({entryName: stat.name});
+    next();
+  });
+  walker.on('end', function() {
+    console.log(files);
+    xmlParser.compressZip(file, files, function (err) {
+      if(!err) {
+        xmlParser.deleteAll(req.params.file, files);
+        res.download(filePath + ".zip", function (err) {
+          if (!err) {
+            xmlParser.deleteFile(req.params.file, function (err) {
+              if (!err)
+                console.log("File Deleted: " + file);
+              else
+                console.log("Could not delete file: " + filePath);
+            });
+          }
+        });
+      }
+    });
   });
 });
 

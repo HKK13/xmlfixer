@@ -16,6 +16,7 @@
     "mkdirp": "^0.5.1",
     "morgan": "~1.6.1",
     "serve-favicon": "~2.3.0",
+    "walk": "^2.3.9",
     "xmldoc": "^0.3.1"
   }
 }
