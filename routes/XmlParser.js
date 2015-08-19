@@ -8,7 +8,7 @@ var AdmZip = require('adm-zip'),
     xmlSer = require('xmldom').XMLSerializer,
     pathP = require('path');
 
-//TODO Kaan bu class? comment eder misin, file'in nerelerde processlerden geçildi?inin bilinmesi iyi, her metoda birer tane tan?mlay?c? comment i?levsel olur!
+//TODO Kaan bu class? comment eder misin, file'in nerelerde processlerden geï¿½ildi?inin bilinmesi iyi, her metoda birer tane tan?mlay?c? comment i?levsel olur!
 
 var __dir = pathP.join(__dirname, "/..", "public", "uploads");
 var decompressZip= function(file, callback)
@@ -53,7 +53,7 @@ var findInEntryList = function (entryList, file, callback) {
 var validateXML= function(uploadedFolder, fileList, tagName, callback) {
     var errorLog = [],
         warningFileList = [],
-        successLog = [],
+        successLog = {files: {}},
         filesToEdit = [];
 
     checkForMacFiles(fileList, function (err, newFileList, toBeDeletedMacs) {
@@ -89,15 +89,12 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
                                 if (!err) {
                                     try {   //Write files synchronous.
                                         fs.writeFileSync(file, fileToWrite, {flags: 'w'});
-                                        successLog.push("SUCCESS: \t" + filename + "\t is written to disk.");
                                         if ((fileList.length - 1) === index) {
-                                            successLog.push("DONE.");
                                             callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                                         }
                                     } catch (e) {
                                         errorLog.push("ERROR: \t" + filename + "\t could not be written to disk. Cause: " + e);
                                         if ((fileList.length - 1) === index) {
-                                            successLog.push("DONE.");
                                             callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                                         }
                                     }
@@ -105,7 +102,6 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
                                     if(fileToWrite != null)
                                         filesToEdit.push(filename);
                                     if ((fileList.length - 1) === index) {
-                                        successLog.push("DONE.");
                                         callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                                     }
                                 }
@@ -142,11 +138,43 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                             isExist = true;
                         }
                         if(beforeValue != "\n" && nodes[i].childNodes[a].data.indexOf(beforeValue) > -1) {
-                            successLog.push("Filename: " + filename + " Tag no: " + (i + 1) + " Child: " + (a + 1) + ": " + beforeValue + " \t -> NOT DELETED <a target='_blank' href='/XMLEdit/" + rarname + "/" + filename + "'>edit</a>");
+                            if (filename in successLog.files) {
+                                successLog.files[filename].events.push({
+                                    tagNo: (i + 1),
+                                    childNo: (a + 1),
+                                    data: beforeValue,
+                                    status: "NOT DELETED"
+                                });
+                            } else {
+                                successLog.files[filename] = {events: [], url: "/XMLEdit/" + rarname + "/" + filename};
+                                successLog.files[filename].events.push({
+                                    tagNo: (i + 1),
+                                    childNo: (a + 1),
+                                    data: beforeValue,
+                                    status: "NOT DELETED"
+                                });
+                            }
                             requiresEdit = true;
                         }
-                        else if(nodes[i].childNodes[a].data.indexOf(beforeValue) === -1)
-                            successLog.push("Filename: " + filename +" Tag no: " + (i+1) + " Child: " + (a+1) + ": " + beforeValue + " \t -> DELETED");
+                        else if(nodes[i].childNodes[a].data.indexOf(beforeValue) === -1) {
+                            var deletedContent = beforeValue.substr(0,1) + " " + beforeValue.substr(1, beforeValue.length-1);
+                            if (filename in successLog.files) {
+                                successLog.files[filename].events.push({
+                                    tagNo: (i + 1),
+                                    childNo: (a + 1),
+                                    data: deletedContent,
+                                    status: "DELETED"
+                                });
+                            } else {
+                                successLog.files[filename] = {events: [], url: "/XMLEdit/" + rarname + "/" + filename};
+                                successLog.files[filename].events.push({
+                                    tagNo: (i + 1),
+                                    childNo: (a + 1),
+                                    data: deletedContent,
+                                    status: "DELETED"
+                                });
+                            }
+                        }
                     }
                 }
             }
