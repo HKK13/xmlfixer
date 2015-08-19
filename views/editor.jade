@@ -4,6 +4,7 @@ extends layout
 
 block content
    div#xmlEditor
+      h2= file
       form(action="/XMLEdit" method="POST" onload="ShowSelection")
          h2= status
          input(type="text" value=file name="fileName" style="display: none")

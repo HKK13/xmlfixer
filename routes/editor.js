@@ -13,7 +13,7 @@ var router = express.Router();
 
 router.get('/:zip/:xml', function (req, res) {
     xmlEditor.readXmlFile(req.params.zip, req.params.xml, function (err, data) {
-        res.render('editor', {title: "XML Editor", text: data, file: req.params.xml, folder: req.params.zip});
+        res.render('editor', {title: "XML Editor: " + req.params.xml, text: data, file: req.params.xml, folder: req.params.zip});
     });
 });
 
@@ -24,7 +24,7 @@ router.post('/', function (req, res) {
             xmlEditor.readXmlFile(req.body.folderName, req.body.fileName, function (err, data) {
                 if (!err) {
                     res.render('editor', {
-                        title: "XML Editor",
+                        title: "XML Editor: " + req.body.fileName,
                         text: data,
                         file: req.body.fileName,
                         folder: req.body.folderName,
@@ -32,7 +32,7 @@ router.post('/', function (req, res) {
                     });
                 } else {
                     res.render('editor', {
-                        title: "XML Editor",
+                        title: "XML Editor: " + req.body.fileName,
                         text: data,
                         file: req.body.fileName,
                         folder: req.body.folderName,

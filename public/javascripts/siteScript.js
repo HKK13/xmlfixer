@@ -115,6 +115,11 @@ $(document).ready(function () {
                     mainTable.appendChild(table);
                 }
             }
+            var tr = document.createElement("tr");
+            var td = document.createElement("td");
+            td.colSpan = 7;
+            td.innerHTML = "DONE."
+            mainTable.appendChild(tr.appendChild(td));
 
             $('#errorTable').remove();
             var table = document.createElement("ul");

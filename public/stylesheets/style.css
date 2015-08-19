@@ -41,6 +41,10 @@ a {
   text-align: center;
 }
 
+#error-log ul li{
+  color: red;
+}
+
 #process-log h1{
   text-align: center;
 }
@@ -201,6 +205,10 @@ a {
   overflow-y: scroll;
   font-size: 18px;
   border-radius: 6px;
+}
+
+#xmlEditor, #xmlEditor form h2{
+  color: white;
 }
 
 .submit-but{
