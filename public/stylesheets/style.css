@@ -8,7 +8,7 @@ a {
 }
 
 #success-log{
-  width: 42%;
+  width: 55%;
   float: left;
   margin-top: 200px;
   height: 600px;
@@ -16,8 +16,24 @@ a {
   text-align: center;
 }
 
+#success-log table tr td a{
+  color: blue;
+}
+
+#success-log table hr{
+  width: 100%;
+}
+
+#success-log table, #success-log table tr{
+  width: 100%;
+}
+
+#success-log table{
+  border-collapse: collapse;
+}
+
 #error-log{
-  width: 42%;
+  width: 30%;
   float: right;
   margin-top: 200px;
   height: 600px;
@@ -27,7 +43,6 @@ a {
 
 #process-log h1{
   text-align: center;
-  //margin-top: 250px;
 }
 
 
@@ -37,7 +52,7 @@ a {
   top: 0;
   left: 0;
   right: 0;
-  background-color: #6B0000;
+  background-color: rgba(135, 206, 250, 0.8);
   text-align: center;
   height: 220px;
   width: 100%;
@@ -64,7 +79,7 @@ a {
   border-radius: 4px;
 }
 
-#container-div form input[type='submit'], #fileInputButton{
+#container-div form input[type='submit'], #fileInputButton, .submit-but{
   width: 350px;
   height: 35px;
   background: transparent;
@@ -124,21 +139,8 @@ a {
 #downloader{
   text-align: center;
   padding: 8px;
-  position: fixed;
   z-index: 50;
-  bottom: 40%;
-  left: 45%;
   display: none;
-}
-
-#downloader a h3{
-  margin-top: 5px;
-  color: black;
-  font-size: 16px;
-}
-
-#downloader a{
-  text-decoration: none;
 }
 
 @media (max-width: 698px) {
@@ -173,47 +175,43 @@ a {
   text-align: center;
 }
 
-.footer div form{
-  padding: 20px;
-  display: inline-block;
-}
-
-.footer div form input{
-  border: 1px solid white;
-  border-radius: 2px;
-  background-color: transparent;
-  font-size: 16px;
-  margin: 5px;
-  width: 140px;
-  color: white;
+#xmlEditor{
+  position: fixed;
+  width: 100%;
+  min-height: 100%;
+  background-color: rgba(135, 206, 250, 0.8);
+  top: 0;
+  left: 0;
   text-align: center;
-  padding: auto;
 }
 
-.footer div form input[type=submit]{
-  height: 22px;
-  padding: 0px;
+#xmlEditor form{
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5%;
+  min-width: 90%;
+  max-width: 90%;
+  min-height: 600px;
 }
 
-.footer div form select{
-  margin: 5px;
-  font-size: 16px;
-  border: 1px solid white;
-  border-radius: 2px;
-  width: 140px;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  appearance: none;
-  background: white url('../images/arrow486.png') no-repeat;
-  background-position: 95% center;
+#xmlEditor textarea{
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 600px;
+  overflow-y: scroll;
+  font-size: 18px;
+  border-radius: 6px;
 }
 
-@-moz-document url-prefix() {
-  .footer div form input[type=submit] {
-    height: 22px;
-  }
+.submit-but{
+  font-size: 20px;
+  border: 2px solid white;
+  color: white;
+  width: 250px;
+  margin-top: 30px;
+}
 
-  .footer div form select{
-    height: 21px;
-  }
+#downloadImage{
+  margin-top: 6px;
+  width: 50px;
 }

@@ -2,64 +2,21 @@ var express = require('express');
 var busboy = require('connect-busboy');
 var fs = require('fs');
 var xmlParser = require('./XmlParser'),
-    path = require('path');
+    path = require('path'),
+    xmlEditor = require('./xmlEditor');
 
 var router = express.Router();
 
 router.use(busboy());
 
 
-//TODO : Kaan buralarda da ana index.js'te hangi ?artta fonksiyonlar nas?l ça??r?l?yor anlat?rsan iyi olur, mesela if caselerinin içinde, ?u durumdaysa bu ifi yapar demek ilerde editlemeye kolayl?k :)
+//TODO : Kaan buralarda da ana index.js'te hangi ?artta fonksiyonlar nas?l ï¿½a??r?l?yor anlat?rsan iyi olur, mesela if caselerinin iï¿½inde, ?u durumdaysa bu ifi yapar demek ilerde editlemeye kolayl?k :)
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Translation Validator'});
 });
 
-router.post('/XMLUpload', function (req, res) {
-  var __dir = path.join(__dirname, "/..", "public", "uploads"),
-  formArray = [];
-  req.pipe(req.busboy);
-  req.busboy.on('field', function (fieldname, val) {
-    formArray[fieldname] = val;
-    if(formArray["xmlFileSelect"] && formArray["tagNum"] && formArray["childNum"] && formArray["fileName"] && formArray["tagName"]) {
-      xmlParser.decompressZip(__dir + "/" + formArray["fileName"], function (err, entryList) {
-        if(!err) {
-          xmlParser.deleteFile(formArray["fileName"]);
-          xmlParser.findInEntryList(entryList, formArray["xmlFileSelect"], function (err) {
-            if(err !== -1){
-              console.log("File found");
-              xmlParser.deleteChild(formArray["fileName"].substr(0, formArray["fileName"].length-4) + "/" +
-              formArray["xmlFileSelect"], formArray["tagName"], formArray["tagNum"], formArray["childNum"], function (err) {
-                if(!err){
-                  console.log("Child Deleted");
-                  xmlParser.compressZip(formArray["fileName"].substr(0, formArray["fileName"].length-4), entryList, function (err) {
-                    if(!err){
-                      console.log("File compressed");
-                      res.json({
-                        redirectUrl: formArray["fileName"],
-                        serverMessage: " DELETED: Child: " + formArray["childNum"] + "   FROM: " + formArray["xmlFileSelect"] +  " - Tag Name: " + formArray["tagName"] + " - Tag No: " + formArray["tagNum"] + "."
-                      }).send();
-                      xmlParser.deleteAll( formArray["fileName"], entryList);
-                    }else{
-                      res.json({error: err}).send();
-                    }
-                  });
-                }else{
-                  res.json({error: err}).send();
-                }
-              });
-            }else{
-              res.json({error: err}).send();
-            }
-          });
-        }else{
-          res.json({error: err}).send();
-        }
-      });
-    }
-  });
-});
 
 router.post('/XMLZipUploads', function (req, res) {
   var __dir = path.join(__dirname, "/..", "public", "uploads");
@@ -81,19 +38,7 @@ router.post('/XMLZipUploads', function (req, res) {
           xmlParser.deleteFile(filename);
           xmlParser.validateXML(filename.substr(0, filename.length - 4), zipEntries, tag, function (err, successes, errorLog, fileList, macZips) {
             if (!err) {
-              xmlParser.compressZip(filename.substr(0, filename.length - 4), zipEntries, function (erro) {
-                if (!erro) {
-                  if (!erro) {
-                    res.json({redirectUrl: filename, successLog: successes, errors: errorLog, fileList: fileList}).send();
-                  }
-                  else{
-                    console.log("compressZip Callback: Cannot compress!");
-                    errorLog.push("Problem in the server!");
-                    res.json({redirectUrl: filename, successLog: successes, errors: errorLog, fileList: fileList}).send();
-                  }
-                  xmlParser.deleteAll(filename, zipEntries.concat(macZips));
-                }
-              });
+              res.json({redirectUrl: filename, successLog: successes, errors: errorLog, fileList: fileList}).send();
             }else if(err && !tag){
               res.status(400).send("No tag specified.");
               xmlParser.deleteAll(filename, zipEntries.concat(macZips));
@@ -118,7 +63,7 @@ router.post('/XMLZipUploads', function (req, res) {
 });
 
 
-//File download edildi?inde buras? çal???yor, download fonksiyonu edit edilmi? file'?n sourcetan al?nmas?n? sa?l?yor.
+//File download edildi?inde buras? ï¿½al???yor, download fonksiyonu edit edilmi? file'?n sourcetan al?nmas?n? sa?l?yor.
 router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file.
   var file = req.params.file;
   var filePath = path.join(__dirname, "/..", "public", "uploads", file);
@@ -133,6 +78,7 @@ router.get('/Download/:file(*)', function (req, res) { //TODO Check for non file
     }
   });
 });
+
 
 router.get('/Help', function (req, res) {
   res.render('help', {title: "Help"});

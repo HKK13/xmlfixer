@@ -85,7 +85,7 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
                                 }
                             }).parseFromString(data, "text/xml");   //Create a new dom document from xml with external module xmldom.
 
-                            fixXML(doc, tagName, filename, successLog, function (err, fileToWrite) {
+                            fixXML(doc, tagName, uploadedFolder, filename, successLog, function (err, fileToWrite) {
                                 if (!err) {
                                     try {   //Write files synchronous.
                                         fs.writeFileSync(file, fileToWrite, {flags: 'w'});
@@ -126,7 +126,7 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
     });
 };
 
-var fixXML= function (doc, tagName,filename, successLog, callback) {
+var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
     var nodes = doc.documentElement.getElementsByTagName(tagName);  //Get all elements by specified tag name.
     var isExist = false, requiresEdit = false;
     if(nodes.length > 0) {
@@ -142,7 +142,7 @@ var fixXML= function (doc, tagName,filename, successLog, callback) {
                             isExist = true;
                         }
                         if(beforeValue != "\n" && nodes[i].childNodes[a].data.indexOf(beforeValue) > -1) {
-                            successLog.push("Filename: " + filename + " Tag no: " + (i + 1) + " Child: " + (a + 1) + ": " + beforeValue + " \t -> NOT DELETED");
+                            successLog.push("Filename: " + filename + " Tag no: " + (i + 1) + " Child: " + (a + 1) + ": " + beforeValue + " \t -> NOT DELETED <a target='_blank' href='/XMLEdit/" + rarname + "/" + filename + "'>edit</a>");
                             requiresEdit = true;
                         }
                         else if(nodes[i].childNodes[a].data.indexOf(beforeValue) === -1)

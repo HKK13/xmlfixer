@@ -8,6 +8,7 @@ var uploadedFile;
 $(document).ready(function () {
     var isOpen = true;
 
+
     $(document).mouseup(function (e) {
         var container = $("#container-div");
         if (!container.is(e.target) && container.has(e.target).length === 0 && isOpen) // ... nor a descendant of the container
@@ -69,20 +70,55 @@ $(document).ready(function () {
                 isOpen = false;
             }
             document.getElementById("downloadLink").href = "/Download/" + data.redirectUrl;
-            document.getElementById("downloadImage").src = "../images/down.png";
+            //document.getElementById("downloadImage").src = "../images/download164.png";
             $('#downloader').fadeIn(1000);
-            var tables = document.getElementsByTagName("ul");
+            var tables = document.getElementsByTagName("td");
             for (var i=tables.length-1; i>=0;i-=1)
-                if (tables[i]) tables[i].parentNode.removeChild(tables[i]);
-            var table = document.createElement("ul");
-            for(var i =0; i < data.successLog.length; i++) {
-                var innerData = data.successLog[i];
-                var item = document.createElement("li");
-                item.innerHTML = innerData;
-                table.appendChild(item);
+                if (tables[i] && tables[i].parentNode.id != "titleTable")
+                    tables[i].parentNode.removeChild(tables[i]);
+
+
+            var mainTable = document.getElementById('tagTable');
+            for(var file in data.successLog.files){
+                var tr = document.createElement("tr");
+                var td = document.createElement("td");
+                td.colSpan = 7;
+                td.style.borderBottom = "2px solid black";
+                td.style.padding = "10px";
+                mainTable.appendChild(tr.appendChild(td));
+                for(var i=0; i< data.successLog.files[file].events.length;i++){
+                    var table = document.createElement("tr");
+                    var filenameTD = document.createElement("td");
+                    var tagTD = document.createElement("td");
+                    var childTD = document.createElement("td");
+                    var dataTD = document.createElement("td");
+                    var statusTD = document.createElement("td");
+                    var linkTD = document.createElement("td");
+                    var link = document.createElement("a");
+                    filenameTD.innerHTML = file;
+                    tagTD.innerHTML = data.successLog.files[file].events[i].tagNo;
+                    childTD.innerHTML = data.successLog.files[file].events[i].childNo;
+                    dataTD.innerHTML = data.successLog.files[file].events[i].data;
+                    statusTD.innerHTML = data.successLog.files[file].events[i].status;
+                    if(statusTD.innerHTML == "DELETED")
+                        statusTD.style.color = "red";
+                    link.innerHTML = "Edit";
+                    link.href = data.successLog.files[file].url;
+                    link.target = "_blank";
+                    linkTD.appendChild(link);
+                    table.appendChild(filenameTD);
+                    table.appendChild(tagTD);
+                    table.appendChild(childTD);
+                    table.appendChild(dataTD);
+                    table.appendChild(statusTD);
+                    table.appendChild(linkTD);
+                    mainTable.appendChild(table);
+                }
             }
-            document.getElementById("success-log").appendChild(table);
+
+            $('#errorTable').remove();
             var table = document.createElement("ul");
+            table.id = "errorTable";
             for(var i =0; i < data.errors.length; i++) {
                 var innerData = data.errors[i];
                 var item = document.createElement("li");
@@ -90,18 +126,6 @@ $(document).ready(function () {
                 table.appendChild(item);
             }
 
-            while (document.getElementById("xmlOnlySelect").hasChildNodes()) {
-                document.getElementById("xmlOnlySelect").removeChild(document.getElementById("xmlOnlySelect").lastChild);
-            }
-
-            data.fileList.forEach(function (element) {
-                if(element.indexOf("MACOSX") === -1) {
-                    var option = document.createElement("option");
-                    option.value = element;
-                    option.innerHTML = element;
-                    document.getElementById("xmlOnlySelect").appendChild(option);
-                }
-            });
             document.getElementById("error-log").appendChild(table);
             $('.loader').hide();
         }).error(function (e) {
@@ -126,27 +150,25 @@ $(document).ready(function () {
         uploadedFile = this.value;
         document.getElementById("footerTagHolder").value = uploadedFile;
     });
-
-
-    $('#xmlEditForm').submit(function (event) {
-        event.preventDefault();
-        var formData = new FormData(document.getElementById('xmlEditForm'));
-        $('.loader').show();
-        $.ajax({
-            type: 'POST',
-            processData: false,
-            contentType: false,
-            url: $('#xmlEditForm').attr('action'),
-            data: formData
-        }).done(function (data) {
-            var li = document.createElement("li");
-            li.innerHTML = data.serverMessage;
-            var ul = document.createElement("ul").appendChild(li);
-            document.getElementById("success-log").appendChild(ul);
-            document.getElementById("downloadLink").href = "/Download/" + data.redirectUrl;
-            $('.loader').hide();
-        }).error(function () {
-            $('.loader').hide();
-        });
-    });
 });
+
+function ShowSelection()
+{
+    var textComponent = document.getElementById('Editor');
+    var selectedText;
+    // IE version
+    if (document.selection != undefined)
+    {
+        textComponent.focus();
+        var sel = document.selection.createRange();
+        selectedText = sel.text;
+    }
+    // Mozilla version
+    else if (textComponent.selectionStart != undefined)
+    {
+        var startPos = textComponent.selectionStart;
+        var endPos = textComponent.selectionEnd;
+        selectedText = textComponent.value.substring(startPos, endPos)
+    }
+    alert("You selected: " + selectedText);
+}
