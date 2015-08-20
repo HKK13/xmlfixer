@@ -143,7 +143,8 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                                     tagNo: (i + 1),
                                     childNo: (a + 1),
                                     data: beforeValue,
-                                    status: "NOT DELETED"
+                                    status: "NOT DELETED",
+                                    tagname: tagName
                                 });
                             } else {
                                 successLog.files[filename] = {events: [], url: "/XMLEdit/" + rarname + "/" + filename};
@@ -151,7 +152,8 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                                     tagNo: (i + 1),
                                     childNo: (a + 1),
                                     data: beforeValue,
-                                    status: "NOT DELETED"
+                                    status: "NOT DELETED",
+                                    tagname: tagName
                                 });
                             }
                             requiresEdit = true;
@@ -163,7 +165,8 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                                     tagNo: (i + 1),
                                     childNo: (a + 1),
                                     data: deletedContent,
-                                    status: "DELETED"
+                                    status: "DELETED",
+                                    tagname: tagName
                                 });
                             } else {
                                 successLog.files[filename] = {events: [], url: "/XMLEdit/" + rarname + "/" + filename};
@@ -171,7 +174,8 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                                     tagNo: (i + 1),
                                     childNo: (a + 1),
                                     data: deletedContent,
-                                    status: "DELETED"
+                                    status: "DELETED",
+                                    tagname: tagName
                                 });
                             }
                         }
