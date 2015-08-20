@@ -192,16 +192,16 @@ a {
 #xmlEditor form{
   margin-left: auto;
   margin-right: auto;
-  margin-top: 5%;
-  min-width: 90%;
-  max-width: 90%;
+  margin-top: 2%;
+  min-width: 95%;
+  max-width: 95%;
   min-height: 600px;
 }
 
 #xmlEditor textarea{
   min-width: 100%;
   max-width: 100%;
-  min-height: 600px;
+  min-height: 700px;
   overflow-y: scroll;
   font-size: 18px;
   border-radius: 6px;
