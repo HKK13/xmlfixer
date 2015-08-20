@@ -103,7 +103,7 @@ $(document).ready(function () {
                     if(statusTD.innerHTML == "DELETED")
                         statusTD.style.color = "red";
                     link.innerHTML = "Edit";
-                    link.href = data.successLog.files[file].url;
+                    link.href = data.successLog.files[file].url + "/" + data.successLog.files[file].events[i].tagname + "/" + tagTD.innerHTML;
                     link.target = "_blank";
                     linkTD.appendChild(link);
                     table.appendChild(filenameTD);
@@ -156,24 +156,3 @@ $(document).ready(function () {
         document.getElementById("footerTagHolder").value = uploadedFile;
     });
 });
-
-function ShowSelection()
-{
-    var textComponent = document.getElementById('Editor');
-    var selectedText;
-    // IE version
-    if (document.selection != undefined)
-    {
-        textComponent.focus();
-        var sel = document.selection.createRange();
-        selectedText = sel.text;
-    }
-    // Mozilla version
-    else if (textComponent.selectionStart != undefined)
-    {
-        var startPos = textComponent.selectionStart;
-        var endPos = textComponent.selectionEnd;
-        selectedText = textComponent.value.substring(startPos, endPos)
-    }
-    alert("You selected: " + selectedText);
-}
