@@ -11,14 +11,14 @@ var xmlParser = require('../routes/XmlParser'),
 var _dir = pathP.join(__dirname, "/..", "public");
 
 var readXmlFile = function (zipname, filename, callback) {
-    fs.readFile(pathP.join(_dir, "uploads", zipname, filename), function (err, data) {
+    fs.readFile(pathP.join(_dir, "uploads", zipname, filename), 'utf-8', function (err, data) {
         if(!err)
         callback(false, data);
     });
 };
 
 var writeXmlFile = function (folder, file, data, callback) {
-    fs.writeFile(pathP.join(_dir, "uploads", folder, file), data, function (err) {
+    fs.writeFile(pathP.join(_dir, "uploads", folder, file), data, 'utf-8', function (err) {
         if(!err)
             callback(false);
         else
@@ -26,29 +26,20 @@ var writeXmlFile = function (folder, file, data, callback) {
     });
 };
 
-var createDomFromXml = function (data, callback) {
-    var doc = new xmldom({  //Configure xmldom.
-        errorHandler: {
-            warning: function (err) {
-                console.log(err);
-            },
-            error: function (err) {
-                if (warningFileList.indexOf(filename) < 0) {
-                    console.log("Warning! File or Syntax might be corrupt:" + filename);
-                }
-            },
-            fatalError: function (err) {
-                console.log(err + "\t Filename" + filename);
-            }
-        }
-    }).parseFromString(data, "text/xml");
-    callback(false, doc);
-};
+var getCaretPos = function (dataString, tagName, tagNum, childNum, callback) {
+    var caretPos = getPosition(dataString, "<"+tagName+">", tagNum);
+    var caretEnd = getPosition(dataString, "</"+tagName+">", tagNum)
+    callback(caretPos, caretEnd + tagName.length + 3);
+}
 
+var getPosition = function(str, m, i) {
+    return str.split(m, i).join(m).length;
+};
 
 
 module.exports = {
     readXmlFile: readXmlFile,
     writeXmlFile: writeXmlFile,
-    createDomFromXml: createDomFromXml
+    createDomFromXml: createDomFromXml,
+    getCaretPos: getCaretPos
 }

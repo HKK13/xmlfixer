@@ -11,9 +11,11 @@ var xmlParser = require('./XmlParser'),
 var router = express.Router();
 
 
-router.get('/:zip/:xml', function (req, res) {
+router.get('/:zip/:xml/:tagname/:tagno', function (req, res) {
     xmlEditor.readXmlFile(req.params.zip, req.params.xml, function (err, data) {
-        res.render('editor', {title: "XML Editor: " + req.params.xml, text: data, file: req.params.xml, folder: req.params.zip});
+        xmlEditor.getCaretPos(data, req.params.tagname, req.params.tagno, req.params.childno, function (pos, end) {
+            res.render('editor', {title: "XML Editor: " + req.params.xml, text: data, file: req.params.xml, folder: req.params.zip, tagname: req.params.tagname, tagno: req.params.tagno, childno: req.params.childno, caret: pos, caretEnd: end});
+        })
     });
 });
 

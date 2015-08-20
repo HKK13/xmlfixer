@@ -1,13 +1,41 @@
 //
    Created by Kaan on 17/08/15.
-extends layout
+doctype html
+html
+   head
+      title= title
+      link(rel='stylesheet', href='/stylesheets/style.css')
+      script(type="text/javascript" src="https://code.jquery.com/jquery-2.1.4.min.js")
+   body
+      block content
 
-block content
    div#xmlEditor
       h2= file
       form(action="/XMLEdit" method="POST" onload="ShowSelection")
          h2= status
          input(type="text" value=file name="fileName" style="display: none")
          input(type="text" value=folder name="folderName" style="display: none")
-         textarea(name="fileData")=text
+         textarea#xmlText(name="fileData")=text
          input(type="submit" value="Save").submit-but
+   script(type="text/javascript").
+      var caret =!{JSON.stringify(caret)};
+      var caretEnd =!{JSON.stringify(caretEnd)};
+      $(document).ready(function () {
+
+         $.fn.selectRange = function (start, end) {
+            if (!end) end = start;
+            return this.each(function () {
+               if (this.setSelectionRange) {
+                  this.focus();
+                  this.setSelectionRange(start, end);
+               } else if (this.createTextRange) {
+                  var range = this.createTextRange();
+                  range.collapse(true);
+                  range.moveEnd('character', end);
+                  range.moveStart('character', start);
+                  range.select();
+               }
+            });
+         };
+         $('#xmlText').selectRange(caret, caretEnd);
+      });
