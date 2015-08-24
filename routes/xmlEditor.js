@@ -1,11 +1,7 @@
 /**
  * Created by Kaan on 17/08/15.
  */
-var xmlParser = require('../routes/XmlParser'),
-    mkdrip = require('mkdirp'),
-    fs = require('fs'),
-    xmldom = require('xmldom').DOMParser,
-    xmlSer = require('xmldom').XMLSerializer,
+var fs = require('fs'),
     pathP = require('path');
 
 var _dir = pathP.join(__dirname, "/..", "public");
@@ -40,6 +36,5 @@ var getPosition = function(str, m, i) {
 module.exports = {
     readXmlFile: readXmlFile,
     writeXmlFile: writeXmlFile,
-    createDomFromXml: createDomFromXml,
     getCaretPos: getCaretPos
 }
