@@ -89,32 +89,32 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) { //Valid
 
                             //TODO get rid of same if codes.
                             fixXML(doc, tagName, uploadedFolder, filename, successLog, function (err, fileToWrite) { //Actual editing starts here.
-                                if (!err) {
-                                    try {   //Write files synchronous.
-                                        fs.writeFileSync(file, fileToWrite, {flags: 'w'});
-                                        if ((fileList.length - 1) === index) {
-                                            callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
-                                        }
-                                    } catch (e) {
-                                        errorLog.push("ERROR: \t" + filename + "\t could not be written to disk. Cause: " + e);
-                                        if ((fileList.length - 1) === index) {
-                                            callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
-                                        }
+                            if (!err) {
+                                try {   //Write files synchronous.
+                                    fs.writeFileSync(file, fileToWrite, {flags: 'w'});
+                                    if ((fileList.length - 1) === index) {
+                                        callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                                     }
-                                } else {
-                                    if(fileToWrite != null)
-                                        filesToEdit.push(filename);
+                                } catch (e) {
+                                    errorLog.push("ERROR: \t" + filename + "\t could not be written to disk. Cause: " + e);
                                     if ((fileList.length - 1) === index) {
                                         callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                                     }
                                 }
-                            });
-                        } else {
-                            errorLog.push("Could not validate file: \t" + filename);
-                            if ((fileList.length - 1) === index) {
-                                callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
+                            } else {
+                                if(fileToWrite != null)
+                                    filesToEdit.push(filename);
+                                if ((fileList.length - 1) === index) {
+                                    callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
+                                }
                             }
+                        });
+                    } else {
+                        errorLog.push("Could not validate file: \t" + filename);
+                        if ((fileList.length - 1) === index) {
+                            callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
                         }
+                    }
                     });
                 } else if ((fileList.length - 1) === index) {
                     callback(false, successLog, errorLog, filesToEdit, toBeDeletedMacs);
@@ -125,6 +125,7 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) { //Valid
     });
 };
 
+//As?l xml editinin yap?ld??? fonksiyon, mesela & ile ba?layan stringleri silmek gibi!!
 var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
     var nodes = doc.documentElement.getElementsByTagName(tagName);  //Get all elements by specified tag name.
     var isExist = false, requiresEdit = false;
@@ -141,7 +142,7 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                             nodes[i].childNodes[a].data = " ";
                             isExist = true;
                         }
-                        //If a char other than \n is exists
+                        // \n dan ba?ka karakter varsa!
                         if(beforeValue != "\n" && nodes[i].childNodes[a].data.indexOf(beforeValue) > -1) {
                             if (filename in successLog.files) {
                                 successLog.files[filename].events.push({
@@ -163,7 +164,7 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                             }
                             requiresEdit = true;
                         }
-                        //If a char is deleted.
+                        //Karakter silindiyse!
                         else if(nodes[i].childNodes[a].data.indexOf(beforeValue) === -1) {
                             var deletedContent = beforeValue.substr(0,1) + " " + beforeValue.substr(1, beforeValue.length-1);
                             if (filename in successLog.files) {

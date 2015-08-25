@@ -21,7 +21,7 @@ router.post('/XMLZipUploads', function (req, res) {
   var __dir = path.join(__dirname, "/..", "public", "uploads");
   var fstream;
   var tag;
-  req.pipe(req.busboy); //Busboy handles multipart/form data -> more than 1 packages of data.
+  req.pipe(req.busboy); //Busboy handles multipart/form data -> more than 1 packages, for example image of data.
 
   req.busboy.on('field', function (fieldname, val) { //Fired when a field is received (e.g. filename of file from the submitted form in front end.)
       tag = val;
@@ -49,7 +49,7 @@ router.post('/XMLZipUploads', function (req, res) {
           });
         });
       });
-      fstream.on('error', function (err) {
+      fstream.on('error', function (err) { //Exception handling for filestream exceptions!
         if (err.code === 'EISDIR')
           res.status(400).send("No File Sent.");
         else
@@ -77,7 +77,7 @@ router.get('/Download/:file(*)', function (req, res) { //Download specified file
   walker.on('file', function(root, stat, next) { //Get files into list.
     files.push({entryName: stat.name});
     next();
-  });
+  }); //File üzerinde walk eden walker eventi.
   walker.on('end', function() { //When walking finished.
     xmlParser.compressZip(file, files, function (err) { //Compress files in the list.
       if(!err) {
