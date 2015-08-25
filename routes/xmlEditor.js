@@ -22,14 +22,14 @@ var writeXmlFile = function (folder, file, data, callback) {
     });
 };
 
-var getCaretPos = function (dataString, tagName, tagNum, childNum, callback) {
+var getCaretPos = function (dataString, tagName, tagNum, childNum, callback) { //Gets caret position of string in order to provide highlighting.
     var caretPos = getPosition(dataString, "<"+tagName+">", tagNum);
-    var caretEnd = getPosition(dataString, "</"+tagName+">", tagNum)
+    var caretEnd = getPosition(dataString, "</"+tagName+">", tagNum);
     callback(caretPos, caretEnd + tagName.length + 3);
 }
 
-var getPosition = function(str, m, i) {
-    return str.split(m, i).join(m).length;
+var getPosition = function(str, strSearching, tagNum) {
+    return str.split(strSearching, tagNum).join(strSearching).length;
 };
 
 

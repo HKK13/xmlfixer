@@ -11,7 +11,7 @@ var xmlParser = require('./XmlParser'),
 var router = express.Router();
 
 
-router.get('/:zip/:xml/:tagname/:tagno', function (req, res) {
+router.get('/:zip/:xml/:tagname/:tagno', function (req, res) { // :tagno -> defines a parameter (e.g. localhost:3000/asd/qwe/zxc/rty)  tagno == zxc. Can get parameters as req.params.tagno which equals to "zxc".
     xmlEditor.readXmlFile(req.params.zip, req.params.xml, function (err, data) {
         xmlEditor.getCaretPos(data, req.params.tagname, req.params.tagno, req.params.childno, function (pos, end) {
             res.render('editor', {title: "XML Editor: " + req.params.xml, text: data, file: req.params.xml, folder: req.params.zip, tagname: req.params.tagname, tagno: req.params.tagno, childno: req.params.childno, caret: pos, caretEnd: end});
@@ -20,12 +20,11 @@ router.get('/:zip/:xml/:tagname/:tagno', function (req, res) {
 });
 
 router.post('/', function (req, res) {
-    console.log(req.body);
-    xmlEditor.writeXmlFile(req.body.folderName, req.body.fileName, req.body.fileData, function (err) {
+    xmlEditor.writeXmlFile(req.body.folderName, req.body.fileName, req.body.fileData, function (err) { //Can get parameters from req.body fro post method.
         if(!err) {
             xmlEditor.readXmlFile(req.body.folderName, req.body.fileName, function (err, data) {
                 if (!err) {
-                    res.render('editor', {
+                    res.render('editor', { //res.render mean render jade file into html. Basically shows html page. editor.jade is rendered in this case.
                         title: "XML Editor: " + req.body.fileName,
                         text: data,
                         file: req.body.fileName,

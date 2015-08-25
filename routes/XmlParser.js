@@ -8,12 +8,13 @@ var AdmZip = require('adm-zip'),
     xmlSer = require('xmldom').XMLSerializer,
     pathP = require('path');
 
-//TODO Kaan bu class? comment eder misin, file'in nerelerde processlerden ge�ildi?inin bilinmesi iyi, her metoda birer tane tan?mlay?c? comment i?levsel olur!
 
-var __dir = pathP.join(__dirname, "/..", "public", "uploads");
+var __dir = pathP.join(__dirname, "/..", "public", "uploads"); //Default upload directory
+
+
 var decompressZip= function(file, callback)
 {
-    var zip = new AdmZip(file); //ADM Zip is a external Node.js module
+    var zip = new AdmZip(file);
     var target = file.substr(0, file.length-4);
     var zipEntries = zip.getEntries();  //Returns a list of files inside the zip.
     mkdrip(target, function (err) {
@@ -39,7 +40,7 @@ var compressZip= function(uploadedFolder, fileList, callback) {
     });
 };
 
-var findInEntryList = function (entryList, file, callback) {
+var findInEntryList = function (entryList, file, callback) { //Searches file list for specified file. If found index is returned.
     var entryIndex = -1;
     for(var i = 0; i < entryList.length; i++) {
         if (entryList[i].entryName === file) {
@@ -50,22 +51,22 @@ var findInEntryList = function (entryList, file, callback) {
     callback(i);
 }
 
-var validateXML= function(uploadedFolder, fileList, tagName, callback) {
+var validateXML= function(uploadedFolder, fileList, tagName, callback) { //Validation start.
     var errorLog = [],
         warningFileList = [],
         successLog = {files: {}},
         filesToEdit = [];
 
-    checkForMacFiles(fileList, function (err, newFileList, toBeDeletedMacs) {
+    checkForMacFiles(fileList, function (err, newFileList, toBeDeletedMacs) { //Check entry list of zip for mac files (e.g. __MACOSX)
         if(!err && tagName) {
             fileList.forEach(function (entry, index) {  //Validate every file one by one.
                 var file = pathP.join(__dir, uploadedFolder, entry.entryName),
                     filename = entry.entryName,
                     fileExt = filename.substr(filename.lastIndexOf("."), filename.length - filename.lastIndexOf("."));
                 fileList = newFileList;
-                if (entry != null && (fileExt === '.xml')
+                if (entry != null && (fileExt === '.xml') //Continue to validete if and only if the file is an .xml file.
                     && (filename.indexOf("MACOSX") == -1) && !fs.lstatSync(file).isDirectory()) {
-                    fs.readFile(file, 'utf8', function (err, data) {
+                    fs.readFile(file, 'utf8', function (err, data) {    //Read file.
                         if (!err && data !== undefined && data !== null) {
                             var doc = new xmldom({  //Configure xmldom.
                                 errorHandler: {
@@ -85,7 +86,9 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) {
                                 }
                             }).parseFromString(data, "text/xml");   //Create a new dom document from xml with external module xmldom.
 
-                            fixXML(doc, tagName, uploadedFolder, filename, successLog, function (err, fileToWrite) {
+
+                            //TODO get rid of same if codes.
+                            fixXML(doc, tagName, uploadedFolder, filename, successLog, function (err, fileToWrite) { //Actual editing starts here.
                                 if (!err) {
                                     try {   //Write files synchronous.
                                         fs.writeFileSync(file, fileToWrite, {flags: 'w'});
@@ -132,11 +135,13 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                     var uselessValue = nodes[i].childNodes[a].nodeValue;
                     if(nodes[i].childNodes[a].nodeType === 3 && uselessValue != " " && uselessValue != null && uselessValue != undefined && uselessValue.length >0){
                         var beforeValue = nodes[i].childNodes[a].data;
+                        //Deletes strings begin with &.
                         if((nodes[i].childNodes[a].nodeValue.indexOf("&") > -1 || nodes[i].childNodes[a].data.indexOf("&") > -1) && (beforeValue.length > 0)) {
                             nodes[i].childNodes[a].nodeValue = " ";
                             nodes[i].childNodes[a].data = " ";
                             isExist = true;
                         }
+                        //If a char other than \n is exists
                         if(beforeValue != "\n" && nodes[i].childNodes[a].data.indexOf(beforeValue) > -1) {
                             if (filename in successLog.files) {
                                 successLog.files[filename].events.push({
@@ -158,6 +163,7 @@ var fixXML= function (doc, tagName, rarname, filename, successLog, callback) {
                             }
                             requiresEdit = true;
                         }
+                        //If a char is deleted.
                         else if(nodes[i].childNodes[a].data.indexOf(beforeValue) === -1) {
                             var deletedContent = beforeValue.substr(0,1) + " " + beforeValue.substr(1, beforeValue.length-1);
                             if (filename in successLog.files) {
@@ -239,39 +245,10 @@ var checkForMacFiles = function (fileList, callback) {
     fileList.forEach(function (e, index) {
        if(e.entryName.indexOf("MACOSX") > -1) {
            toBeDeleted.push(e);
-           fileList.splice(index, 1);
+           fileList.splice(index, 1); //Remove element from array.
        }
     });
     callback(false, fileList, toBeDeleted);
-};
-
-var deleteChild = function (file, tag, tagNum, childNum, callback) {
-    var isCorrupt = false,
-        path = pathP.join(__dir, file);
-    fs.readFile(path, 'utf8', function (err, data) {
-        if(!err) {
-            var doc = new xmldom({  //Configure xmldom.
-                errorHandler: {
-                    error: function (err) {
-                        isCorrupt = true;
-                    }
-                }
-            }).parseFromString(data, "text/xml");
-
-            var nodes = doc.getElementsByTagName(tag);
-            nodes[tagNum-1].childNodes[childNum-1].data = " ";
-            nodes[tagNum-1].childNodes[childNum-1].nodeValue = " ";
-            var serializer = new xmlSer();
-            serializer.serializeToString(doc);
-            fs.writeFile(path, doc, {flags: "w"}, function (err) {
-                if(!err)
-                    callback(false);
-                else
-                    callback("Cannot write file: " + path);
-            });
-        }else
-            callback("Cannot read file: " + path);
-    });
 };
 
 module.exports = {
@@ -280,6 +257,5 @@ module.exports = {
     deleteFile: deleteFile,
     deleteAll: deleteAll,
     validateXML: validateXML,
-    findInEntryList: findInEntryList,
-    deleteChild: deleteChild
+    findInEntryList: findInEntryList
 };
