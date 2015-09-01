@@ -10,7 +10,7 @@ a {
 #success-log{
   width: 55%;
   float: left;
-  margin-top: 200px;
+  margin-top: 50px;
   height: 600px;
   overflow-y: scroll;
   text-align: center;
@@ -35,7 +35,7 @@ a {
 #error-log{
   width: 30%;
   float: right;
-  margin-top: 200px;
+  margin-top: 50px;
   height: 600px;
   overflow-y: scroll;
   text-align: center;
@@ -58,14 +58,15 @@ a {
   right: 0;
   background-color: rgba(135, 206, 250, 0.8);
   text-align: center;
-  height: 220px;
+  height: 100px;
   width: 100%;
 }
 
 #container-div form{
   margin: auto;
   margin-top: 20px;
-  width: 400px;
+  width: 700px;
+  display: inline-block;
 }
 
 #container-div form input{
@@ -76,15 +77,15 @@ a {
 }
 
 #container-div form input[type='textarea']{
-  width: 344px;
-  height: 35px;
+  width: 200px;
+  height: 29.5px;
   background: transparent;
   border: 2px solid white;
   border-radius: 4px;
 }
 
 #container-div form input[type='submit'], #fileInputButton, .submit-but{
-  width: 350px;
+  width: 200px;
   height: 35px;
   background: transparent;
   border: 2px solid white;

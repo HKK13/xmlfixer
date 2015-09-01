@@ -13,35 +13,12 @@ $(document).ready(function () {
         var container = $("#container-div");
         if (!container.is(e.target) && container.has(e.target).length === 0 && isOpen) // ... nor a descendant of the container
         {
-            $('#container-div').animate({
-                marginTop: "-=210px"
-            }, 1000);
-            $('#process-log').animate({
-                marginTop: "-=210px"
-            }, 1000);
             $('#downloaderLink').animate({
                 paddingTop: "+=210px"
             }, 1000);
             isOpen = false;
         }
     });
-
-
-    $("#container-div").click(function () {
-        if(!isOpen){
-            $("#container-div").animate({
-                marginTop: "+=210px"
-            }, 1000 );
-            $('#process-log').animate({
-                marginTop: "+=210px"
-            }, 1000);
-            $('#bottom').animate({
-                paddingTop: "-=210px"
-            }, 1000);
-            isOpen = true;
-        }
-    });
-
 
     $("#uploadForm").submit(function(event) {
         event.preventDefault();
@@ -55,15 +32,6 @@ $(document).ready(function () {
             data: formData
         }).done(function (data) {
             if(isOpen){
-                $("#container-div").animate({
-                    marginTop: "-=210px"
-                }, 1000 );
-                $('#process-log').animate({
-                    marginTop: "-=210px"
-                }, 1000);
-                $('#bottom').animate({
-                    paddingTop: "+=210px"
-                }, 1000);
                 $('.footer').animate({
                     bottom: "0"
                 }, 1000);
