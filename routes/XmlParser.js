@@ -36,17 +36,6 @@ var compressZip= function(uploadedFolder, fileList, callback) {
             callback(false);
         }
     });
-    /*var zip = new AdmZip();
-    var path = pathP.join(__dir , uploadedFolder);
-    fileList.forEach(function (entry) {
-        zip.addLocalFile(pathP.join(path , entry.entryName));   //Add files to zip file list.
-    });
-    zip.writeZip(__dir + "/" + uploadedFolder + ".zip", function (err) {    //Write file list to disk in zip format.
-        if(!err){
-            callback(false);
-        }else
-            callback(err);
-    });*/
 };
 
 var findInEntryList = function (entryList, file, callback) { //Searches file list for specified file. If found index is returned.
