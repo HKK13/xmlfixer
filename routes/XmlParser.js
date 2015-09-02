@@ -6,7 +6,8 @@ var AdmZip = require('adm-zip'),
     fs = require('fs'),
     xmldom = require('xmldom').DOMParser,
     xmlSer = require('xmldom').XMLSerializer,
-    pathP = require('path');
+    pathP = require('path'),
+    zipFolder = require('zip-folder');
 
 
 var __dir = pathP.join(__dirname, "/..", "public", "uploads"); //Default upload directory
@@ -27,7 +28,15 @@ var decompressZip= function(file, callback)
 };
 
 var compressZip= function(uploadedFolder, fileList, callback) {
-    var zip = new AdmZip();
+
+    zipFolder(pathP.join(__dir, uploadedFolder), pathP.join(__dir, uploadedFolder + ".zip"), function(err) {
+        if(err) {
+            callback(err)
+        } else {
+            callback(false);
+        }
+    });
+    /*var zip = new AdmZip();
     var path = pathP.join(__dir , uploadedFolder);
     fileList.forEach(function (entry) {
         zip.addLocalFile(pathP.join(path , entry.entryName));   //Add files to zip file list.
@@ -37,7 +46,7 @@ var compressZip= function(uploadedFolder, fileList, callback) {
             callback(false);
         }else
             callback(err);
-    });
+    });*/
 };
 
 var findInEntryList = function (entryList, file, callback) { //Searches file list for specified file. If found index is returned.
@@ -85,7 +94,6 @@ var validateXML= function(uploadedFolder, fileList, tagName, callback) { //Valid
                                     }
                                 }
                             }).parseFromString(data, "text/xml");   //Create a new dom document from xml with external module xmldom.
-
 
                             //TODO get rid of same if codes.
                             fixXML(doc, tagName, uploadedFolder, filename, successLog, function (err, fileToWrite) { //Actual editing starts here.
